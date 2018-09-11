@@ -116,13 +116,16 @@
     const orange = document.getElementById('orange')
     const green = document.getElementById('green')
     const btnStart = document.getElementById('btnStart')
+    const LAST_LEVEL = 10
+
     class Game {
       constructor() {
         this.initialize()
         this.generateSequence()
-        this.nextlevel()
+        setTimeout(this.nextLevel, 500)
       }
       initialize() {
+        this.nextLevel = this.nextLevel.bind(this)
         this.chooseColor = this.chooseColor.bind(this)
         btnStart.classList.add('hide')
         this.level = 1
@@ -138,7 +141,8 @@
         this.sequence = new Array(10).fill(0).map(n => Math.floor(Math.random() * 4))
       }
 
-      nextlevel() {
+      nextLevel() {
+        this.sublevel = 0
         this.iluminateSequence()
         this.addEventsClick()
       }
@@ -155,6 +159,20 @@
             return 'green'
         }
       }
+
+      transformColorToNumber(color) {
+        switch (color) {
+          case 'skyBlue':
+            return 0
+          case 'violet':
+            return 1
+          case 'orange':
+            return 2
+          case 'green':
+            return 3
+        }
+      }
+
 
       iluminateSequence() {
         for (let i = 0; i < this.level; i++) {
@@ -179,8 +197,31 @@
         this.colors.green.addEventListener('click', this.chooseColor)
       }
 
-      chooseColor(e) {
+      removeEventsClick() {
+        this.colors.skyBlue.removeEventListener('click', this.chooseColor)
+        this.colors.violet.removeEventListener('click', this.chooseColor)
+        this.colors.orange.removeEventListener('click', this.chooseColor)
+        this.colors.green.removeEventListener('click', this.chooseColor)
+      }
 
+      chooseColor(e) {
+        const nameColor = e.target.dataset.color
+        const numberColor = this.transformColorToNumber(nameColor)
+        this.iluminateColor(nameColor)
+        if (numberColor === this.sequence[this.sublevel]) {
+          this.sublevel++
+          if (this.sublevel === this.level) {
+            this.level++
+            this.removeEventsClick()
+            if (this.level === (LAST_LEVEL + 1)) {
+              // Win
+            } else {
+              setTimeout(this.nextLevel, 1500)
+            }
+          }
+        } else {
+          // Lost
+        }
       }
     }
     function startGame() {
