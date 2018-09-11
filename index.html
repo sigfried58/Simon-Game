@@ -123,6 +123,7 @@
         this.nextlevel()
       }
       initialize() {
+        this.chooseColor = this.chooseColor.bind(this)
         btnStart.classList.add('hide')
         this.level = 1
         this.colors = {
@@ -139,6 +140,7 @@
 
       nextlevel() {
         this.iluminateSequence()
+        this.addEventsClick()
       }
 
       transformNumberToColor(number) {
@@ -168,6 +170,17 @@
 
       turnOffColor(color) {
         this.colors[color].classList.remove('light')
+      }
+
+      addEventsClick() {
+        this.colors.skyBlue.addEventListener('click', this.chooseColor)
+        this.colors.violet.addEventListener('click', this.chooseColor)
+        this.colors.orange.addEventListener('click', this.chooseColor)
+        this.colors.green.addEventListener('click', this.chooseColor)
+      }
+
+      chooseColor(e) {
+
       }
     }
     function startGame() {
